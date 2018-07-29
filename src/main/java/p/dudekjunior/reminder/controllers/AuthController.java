@@ -9,6 +9,7 @@ package p.dudekjunior.reminder.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,8 @@ import p.dudekjunior.reminder.models.forms.LoginForm;
 import p.dudekjunior.reminder.models.forms.RegisterForm;
 import p.dudekjunior.reminder.models.services.AuthService;
 import p.dudekjunior.reminder.models.services.SessionService;
+
+import javax.validation.Valid;
 
 @Controller
 public class AuthController {
@@ -61,14 +64,36 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("registerForm") RegisterForm registerForm,
+    public String register(@ModelAttribute("registerForm") @Valid RegisterForm registerForm,
+                           BindingResult bindingResult,
                            Model model,
                            RedirectAttributes redirectAttributes){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("tryRegister", "wypełnij pola poprawnie");
+            return "register";
+        }
+
+        if(!registerForm.getPassword().equals(registerForm.getRepeatPassword())){
+            model.addAttribute("tryRegister", "hasła nie są takie same!");
+            return "register";
+        }
+
         if(!authService.tryRegister(registerForm)){
             model.addAttribute("tryRegister", "error");
             return "register";
         }
         redirectAttributes.addFlashAttribute("tryLogin", "Zarejestrowałeś się, teraz się zaloguj");
         return "redirect:/";
+    }
+
+    private boolean registerValidation(RegisterForm registerForm, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return false;
+        }
+
+        if(!registerForm.getPassword().equals(registerForm.getRepeatPassword())){
+           return false;
+        }
+        return true;
     }
 }
