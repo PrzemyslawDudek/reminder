@@ -24,8 +24,8 @@ import javax.validation.Valid;
 @Controller
 public class AuthController {
 
-    final AuthService authService;
-    final SessionService sessionService;
+    private final AuthService authService;
+    private final SessionService sessionService;
     @Autowired
     public AuthController(AuthService authService, SessionService sessionService) {
         this.authService = authService;
@@ -86,14 +86,14 @@ public class AuthController {
         return "redirect:/";
     }
 
-    private boolean registerValidation(RegisterForm registerForm, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return false;
-        }
-
-        if(!registerForm.getPassword().equals(registerForm.getRepeatPassword())){
-           return false;
-        }
-        return true;
-    }
+//    private boolean registerValidation(RegisterForm registerForm, BindingResult bindingResult){
+//        if(bindingResult.hasErrors()){
+//            return false;
+//        }
+//
+//        if(!registerForm.getPassword().equals(registerForm.getRepeatPassword())){
+//           return false;
+//        }
+//        return true;
+//    }
 }

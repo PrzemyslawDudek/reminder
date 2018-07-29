@@ -16,7 +16,7 @@ import p.dudekjunior.reminder.models.services.SessionService;
 @Controller
 public class IndexController {
 
-    final SessionService sessionService;
+    private final SessionService sessionService;
     @Autowired
     public IndexController(SessionService sessionService) {
         this.sessionService = sessionService;
