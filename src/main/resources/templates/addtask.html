@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2018 dudekjunior.pl
+  ~
+  ~
+  -->
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Reminder 2.0 - addPost</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+    <div style="width: 600px;  margin-top: 50px; margin-left: auto; margin-right: auto">
+        <form action="/addTask" method="post" th:object="${taskForm}">
+            <input type="text" th:field="*{taskTitle}">
+            <input type="text" th:field="*{taskContext}">
+            <button type="submit" class="btn btn-primary">Add Task</button>
+        </form>
+    </div>
+</body>
+</html>

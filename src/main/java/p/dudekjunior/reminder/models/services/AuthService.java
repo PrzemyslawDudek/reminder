@@ -43,6 +43,11 @@ public class AuthService {
         return true;
     }
 
+    public void logOut(){
+        sessionService.setUserEntity(null);
+        sessionService.setLogin(false);
+    }
+
     private UserEntity createUserEntity(RegisterForm registerForm) {
         UserEntity userEntity = new UserEntity();
         userEntity.setUserLogin(registerForm.getLogin());

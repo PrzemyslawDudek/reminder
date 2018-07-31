@@ -51,8 +51,7 @@ public class AuthController {
 
     @GetMapping("/logOut")
     public String logOut(RedirectAttributes redirectAttributes){
-        sessionService.setUserEntity(null);
-        sessionService.setLogin(false);
+        authService.logOut();
         redirectAttributes.addFlashAttribute("tryLogin", "jesteś wylogowany");
         return "redirect:/";
     }

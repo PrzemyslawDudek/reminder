@@ -36,6 +36,21 @@
             Treść dla użytkownika niezalogowanego
         </div>
         <div th:if="${userSession.isLogin()}">
+            <div>
+                User: <span th:text="${userSession.getUserEntity().getUserLogin()}"></span>
+            </div>
+            <div>
+                <a href="/addTask" class="btn btn-info" role="button">Add Task</a>
+            </div>
+            <div th:each="task : ${userSession.getUserEntity().getUserTasks()}">
+                <span th:text="${task.getTaskTitle()}"></span>
+                <span th:if="${task.isDone()}">done</span>
+                <a th:if="${!task.isDone()}" th:href="'/task/'
+                + ${task.getId()}" class="btn btn-info" role="button">
+                    done
+                </a>
+            </div>
+
             Treść tylko dla zalogowanego użykownika
         </div>
     </div>
