@@ -21,6 +21,6 @@ public class UserEntity {
     @Column(name = "join_date")
     private LocalDateTime joinDate;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     List<TaskEntity> userTasks;
 }

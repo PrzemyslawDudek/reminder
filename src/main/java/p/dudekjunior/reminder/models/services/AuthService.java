@@ -17,8 +17,8 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
-    final UserRepository userRepository;
-    final SessionService sessionService;
+    private final UserRepository userRepository;
+    private final SessionService sessionService;
     @Autowired
     public AuthService(UserRepository userRepository, SessionService sessionService) {
         this.userRepository = userRepository;

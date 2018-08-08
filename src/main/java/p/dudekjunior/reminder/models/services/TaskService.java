@@ -11,16 +11,23 @@ import org.springframework.stereotype.Service;
 import p.dudekjunior.reminder.models.TaskEntity;
 import p.dudekjunior.reminder.models.forms.TaskForm;
 import p.dudekjunior.reminder.models.repositories.TaskRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
 
     private final TaskRepository taskRepository;
     private final SessionService sessionService;
+
     @Autowired
     public TaskService(TaskRepository taskRepository, SessionService sessionService) {
         this.taskRepository = taskRepository;
         this.sessionService = sessionService;
+
     }
 
     public void addTask(TaskForm taskForm){
@@ -36,19 +43,41 @@ public class TaskService {
         return taskEntity;
     }
 
-    public TaskEntity findTaskById(int postId) {
-        return taskRepository.findById(postId).get();
+    public void deleteTaskById(int taskId) {
+        taskRepository.deleteById(taskId);
     }
 
-    public void taskIsDone(int taskId) {
-        taskRepository.save(changeTaskIsDone(taskId));
+    public void taskIsDone(int taskId, boolean isDone) {
+        Optional<List<TaskEntity>> tasks = taskRepository.findByUser(sessionService.getUserEntity());
+        if(!tasks.isPresent()){
+            return;
+        }
+        Optional<TaskEntity> taskIsDone = tasks.get().stream().filter(task -> task.getId() == taskId).findFirst();
+        if(!taskIsDone.isPresent()){
+            return;
+        }
+        taskIsDone.get().setDone(isDone);
+        taskRepository.save(taskIsDone.get());
     }
 
-    private TaskEntity changeTaskIsDone(int taskId){
-        TaskEntity taskEntity = taskRepository.findById(taskId).get();
+    public List<TaskEntity> tasksForToday(){
+        Optional<List<TaskEntity>> tasks = taskRepository.findByUser(sessionService.getUserEntity());
+        if(!tasks.isPresent()){
+            return new ArrayList<>();
+        }
+        return tasks.get()
+                .stream()
+                .filter(task -> !task.isDone())
+                .filter(task -> task.getTaskDate().getDayOfMonth()==LocalDateTime.now().getDayOfMonth())
+                .collect(Collectors.toList());
+    }
 
-        taskEntity.setDone(true);
+    public List<TaskEntity> allUserTasks(){
+        Optional<List<TaskEntity>> tasks = taskRepository.findByUser(sessionService.getUserEntity());
+        return tasks.orElseGet(ArrayList::new);
+    }
 
-        return taskEntity;
+    public TaskEntity getTaskById(int taskId) {
+        return taskRepository.findById(taskId).orElseGet(TaskEntity::new);
     }
 }

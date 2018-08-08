@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import p.dudekjunior.reminder.models.forms.LoginForm;
 import p.dudekjunior.reminder.models.forms.RegisterForm;
 import p.dudekjunior.reminder.models.services.AuthService;
-import p.dudekjunior.reminder.models.services.SessionService;
 
 import javax.validation.Valid;
 
@@ -25,11 +24,9 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final AuthService authService;
-    private final SessionService sessionService;
     @Autowired
-    public AuthController(AuthService authService, SessionService sessionService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.sessionService = sessionService;
     }
 
 
@@ -45,7 +42,7 @@ public class AuthController {
             redirectAttributes.addFlashAttribute("tryLogin", "jesteś zalogowany");
             return "redirect:/";
         }
-        redirectAttributes.addFlashAttribute("tryLogin", "error");
+        redirectAttributes.addFlashAttribute("tryLogin", "złe hasło lub login");
         return "redirect:/";
     }
 
@@ -78,21 +75,10 @@ public class AuthController {
         }
 
         if(!authService.tryRegister(registerForm)){
-            model.addAttribute("tryRegister", "error");
+            model.addAttribute("tryRegister", "złe hasło lub login");
             return "register";
         }
         redirectAttributes.addFlashAttribute("tryLogin", "Zarejestrowałeś się, teraz się zaloguj");
         return "redirect:/";
     }
-
-//    private boolean registerValidation(RegisterForm registerForm, BindingResult bindingResult){
-//        if(bindingResult.hasErrors()){
-//            return false;
-//        }
-//
-//        if(!registerForm.getPassword().equals(registerForm.getRepeatPassword())){
-//           return false;
-//        }
-//        return true;
-//    }
 }

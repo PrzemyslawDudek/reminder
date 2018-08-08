@@ -13,47 +13,84 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
-
     <div style="width: 600px;  margin-top: 50px; margin-left: auto; margin-right: auto">
-        <div>
-            <h1>
-                Reminder 2.0
-            </h1>
-            <div th:if="${!userSession.isLogin()}">
-                <form action="/login" method="post" th:object="${loginForm}">
-                    <input type="text" placeholder="yourLogIn" th:field="*{login}">
-                    <input type="password" placeholder="yourPassword" th:field="*{password}">
-                    <button type="submit" class="btn btn-primary">LogIn</button>
-                    <a href="/register" class="btn btn-info" role="button">Register</a>
-                </form>
-                <p th:if="${tryLogin != null}" th:text="${tryLogin}"></p>
-            </div>
-            <div th:if="${userSession.isLogin()}">
-                <a href="/logOut" class="btn btn-info" role="button">LogOut</a>
-            </div>
-        </div>
+        <h1>
+            Reminder 2.0
+        </h1>
         <div th:if="${!userSession.isLogin()}">
-            Treść dla użytkownika niezalogowanego
+            <form action="/login" method="post" th:object="${loginForm}">
+                <input type="text" placeholder="yourLogIn" th:field="*{login}">
+                <input type="password" placeholder="yourPassword" th:field="*{password}">
+                <button type="submit" class="btn btn-primary">LogIn</button>
+                <a href="/register" class="btn btn-info" role="button">Register</a>
+            </form>
+            <div th:if="${tryLogin != null}">
+                <div th:text="${tryLogin}"  class="alert alert-warning" role="alert"></div>
+            </div>
+            <div class="alert alert-warning" role="alert">
+                Zaloguj się
+            </div>
         </div>
+
+        <hr>
+
         <div th:if="${userSession.isLogin()}">
-            <div>
-                User: <span th:text="${userSession.getUserEntity().getUserLogin()}"></span>
-            </div>
-            <div>
-                <a href="/addTask" class="btn btn-info" role="button">Add Task</a>
-            </div>
-            <div th:each="task : ${userSession.getUserEntity().getUserTasks()}">
-                <span th:text="${task.getTaskTitle()}"></span>
-                <span th:if="${task.isDone()}">done</span>
-                <a th:if="${!task.isDone()}" th:href="'/task/'
-                + ${task.getId()}" class="btn btn-info" role="button">
-                    done
-                </a>
+            <div class="d-flex bd-highlight">
+                <div class="p-2 flex-grow-1 bd-highlight">
+                    <span class="alert alert-success" role="alert">
+                        User: <span th:text="${userSession.getUserEntity().getUserLogin()}"></span>
+                    </span>
+                </div>
+                <div class="p-2 bd-highlight">
+                    <a href="/logOut" class="btn btn-info" role="button">LogOut</a>
+                </div>
             </div>
 
-            Treść tylko dla zalogowanego użykownika
+            <hr>
+
+            <div class="d-flex bd-highlight">
+                <div class="p-2 flex-grow-1 bd-highlight">
+                    <a href="/addTask" class="btn btn-info" role="button">Add Task</a>
+                </div>
+                <div class="p-2 bd-highlight">
+                    <a href="/allUserTasks" class="btn btn-info" role="button">All Tasks</a>
+                </div>
+                <div class="p-2 bd-highlight">
+                    <a href="/todayTask" class="btn btn-info" role="button">Today Task</a>
+                </div>
+            </div>
+
+            <hr>
+
+            <div  th:each="task : ${tasks}">
+                <div class="d-flex bd-highlight">
+                    <div class="p-2 flex-grow-1 bd-highlight">
+                        <a th:href="'/task/' + ${task.getId()}">
+                            <span th:text="${task.getTaskTitle()}"></span>
+                        </a>
+                    </div>
+                    <div class="p-2 bd-highlight">
+                        <a th:if="${task.isDone()}" th:href="'/task/isDone/' + ${task.getId()} + '/' + ${!task.isDone()}">
+                            <button type="button" class="btn btn-danger">UnDone</button>
+                        </a>
+                        <a th:if="${!task.isDone()}" th:href="'/task/isDone/' + ${task.getId()} +'/' + ${!task.isDone()}">
+                            <button type="button" class="btn btn-success">done</button>
+                        </a>
+                    </div>
+                    <div class="p-2 bd-highlight">
+                        <a th:href="'/task/delete/' + ${task.getId()}">
+                            <button type="button" class="btn btn-danger">DeleteTask</button>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <span th:text="${task.getTaskDate()}"></span>
+                </div>
+
+                <hr>
+
+            </div>
         </div>
     </div>
-
 </body>
 </html>
